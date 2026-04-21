@@ -462,3 +462,15 @@ Added `/health` route
 
 **Fix:**
 Introduced reusable axios instance
+
+## Redis Configuration Fix
+
+### File: api/main.py & worker/worker.py
+
+### Problem:
+Used "localhost" for Redis connection, which fails in Docker containers
+
+### Fix:
+Replaced with environment-based configuration:
+- REDIS_HOST=redis
+- Used Docker service name for networking
