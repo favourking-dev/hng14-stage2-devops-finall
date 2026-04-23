@@ -1,23 +1,26 @@
+# Stage 1: builder
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Stage 2: runtime
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Create non-root user
 RUN addgroup --system app && adduser --system --group app
 
-# Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY --from=builder /usr/local/lib/python3.11 /usr/local/lib/python3.11
+COPY --from=builder /usr/local/bin /usr/local/bin
 
-# Copy app
 COPY . .
 
-# Switch to non-root user
 USER app
 
 EXPOSE 8000
 
-# Healthcheck
 HEALTHCHECK CMD curl --fail http://localhost:8000/docs || exit 1
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
