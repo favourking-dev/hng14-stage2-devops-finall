@@ -474,3 +474,19 @@ Used "localhost" for Redis connection, which fails in Docker containers
 Replaced with environment-based configuration:
 - REDIS_HOST=redis
 - Used Docker service name for networking
+
+## CI/CD Pipeline Implementation
+
+### Problem
+No automated pipeline for validation and deployment
+
+### Fix
+Implemented GitHub Actions CI/CD pipeline with stages:
+- Lint
+- Test
+- Build
+- Security Scan (Trivy)
+- Integration Test (docker-compose)
+- Deploy (mock)
+
+Used job dependencies (needs) to enforce strict stage order.
